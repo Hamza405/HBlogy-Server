@@ -18,3 +18,19 @@ exports.register = async (req, res) => {
     res.status(500).json({ error: err });
   }
 };
+
+exports.login = async (req, res) => {
+  try {
+    const user = await User.findOne({ userName: req.body.userName });
+    !user && res.status(400).json({ error: "User not found" });
+
+    const validate = await bcrypt.compare(req.body.password, user.password);
+    !validate && res.status(400).json({ error: "Wrong Password!" });
+
+    const { password, ...others } = user._doc;
+    res.status(200).json(others);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
+  }
+};
