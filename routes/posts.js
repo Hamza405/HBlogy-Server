@@ -4,8 +4,8 @@ const controller = require("../controller/posts");
 // CREATE POST
 router.post("/", controller.createPost);
 
-// UPDATE POST
-// router.delete("/:userId", controller.deleteUser);
+// EDIT POST
+router.put("/:postId", controller.editPost);
 
 // DELETE POST
 // router.get("/:userId", controller.getUser);
