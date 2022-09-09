@@ -35,7 +35,7 @@ exports.deleteUser = async (req, res) => {
           await Post.deleteMany({ userName: user.userName });
         }
         await User.findByIdAndRemove(req.params.userId);
-        res.status(200).json("User has been deleted");
+        res.status(200).json({ message: "User has been deleted" });
       } catch (err) {
         res.status(500).json({ error: err });
       }

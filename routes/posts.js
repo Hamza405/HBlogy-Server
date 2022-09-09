@@ -8,7 +8,7 @@ router.post("/", controller.createPost);
 router.put("/:postId", controller.editPost);
 
 // DELETE POST
-// router.get("/:userId", controller.getUser);
+router.delete("/:postId", controller.deletePost);
 
 // GET POSTS
 

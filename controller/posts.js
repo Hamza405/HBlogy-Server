@@ -35,3 +35,21 @@ exports.editPost = async (req, res) => {
     res.status(500).json({ error: err });
   }
 };
+
+exports.deletePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (post.userName === req.body.userName) {
+      try {
+        await post.delete();
+        res.status(200).json({ message: "Post has been deleted" });
+      } catch (err) {
+        res.status(500).json({ error: err });
+      }
+    } else {
+      res.status(401).json({ error: "You can delete only your posts!" });
+    }
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
