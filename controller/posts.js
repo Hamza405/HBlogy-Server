@@ -1,6 +1,5 @@
 const User = require("../models/User");
 const Post = require("../models/Post");
-const bcrypt = require("bcrypt");
 
 exports.createPost = async (req, res) => {
   const newPost = new Post(req.body);
@@ -64,8 +63,32 @@ exports.getPost = async (req, res) => {
 };
 
 exports.getPosts = async (req, res) => {
+  const userName = req.query.user;
+  const categoryName = req.query.cat;
+  let posts;
   try {
-    const posts = await Post.find();
+    if (userName && categoryName) {
+      posts = await Post.find({
+        $and: [
+          {
+            categories: {
+              $in: [categoryName],
+            },
+          },
+          { userName },
+        ],
+      });
+    } else if (categoryName) {
+      posts = await Post.find({
+        categories: {
+          $in: [categoryName],
+        },
+      });
+    } else if (userName) {
+      posts = await Post.find({ userName });
+    } else {
+      posts = await Post.find();
+    }
     res.status(200).json(posts);
   } catch (err) {
     res.status(500).json({ error: err });
