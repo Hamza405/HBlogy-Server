@@ -53,3 +53,20 @@ exports.deletePost = async (req, res) => {
     res.status(500).json({ error: err });
   }
 };
+
+exports.getPost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    res.status(200).json(post);
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
+exports.getPosts = async (req, res) => {
+  try {
+    const posts = await Post.find();
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
