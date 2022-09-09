@@ -66,6 +66,7 @@ exports.getPost = async (req, res) => {
 exports.getPosts = async (req, res) => {
   try {
     const posts = await Post.find();
+    res.status(200).json(posts);
   } catch (err) {
     res.status(500).json({ error: err });
   }
