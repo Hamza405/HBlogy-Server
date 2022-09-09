@@ -29,7 +29,7 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   if (req.body.userId === req.params.userId) {
     try {
-      const user = User.findById(req.params.userId);
+      const user = await User.findById(req.params.userId);
       try {
         if (user) {
           await Post.deleteMany({ userName: user.userName });
@@ -44,5 +44,16 @@ exports.deleteUser = async (req, res) => {
     }
   } else {
     res.status(401).json({ error: "You can delete only your account!" });
+  }
+};
+
+exports.getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    const { password, ...others } = user._doc;
+    res.status(200).json(others);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err });
   }
 };
