@@ -8,7 +8,9 @@ const postSchema = mongoose.Schema(
     userName: { type: String, required: true },
     categories: { type: Array, required: false },
   },
-  { timestamp: true }
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("Post", postSchema);
