@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/users");
@@ -10,6 +11,8 @@ const storage = require("./utils/storage");
 require("./utils/database").mongooseConnect();
 
 const app = express();
+app.use(cors());
+app.options("*", cors());
 
 app.use(express.json());
 app.use("/api", authRouter);
