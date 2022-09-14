@@ -3,7 +3,7 @@ const controller = require("../controller/users");
 const User = require("../models/User");
 
 // UPDATE USER
-router.post("/:userId", controller.updateUser);
+router.put("/:userId", controller.updateUser);
 
 // DELETE USER
 router.delete("/:userId", controller.deleteUser);
