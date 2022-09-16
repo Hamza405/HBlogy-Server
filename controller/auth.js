@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
   try {
@@ -13,7 +14,14 @@ exports.register = async (req, res) => {
     });
 
     const user = await newUser.save();
-    res.status(200).json(user);
+    const data = user._doc;
+
+    const token = jwt.sign(
+      { userId: data._id, email: data.email },
+      "MySecretKey"
+    );
+
+    res.status(200).json({ ...data, token });
   } catch (err) {
     res.status(500).json({ error: err });
   }
@@ -27,8 +35,13 @@ exports.login = async (req, res) => {
     const validate = await bcrypt.compare(req.body.password, user.password);
     !validate && res.status(400).json({ error: "Wrong Password!" });
 
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      "MySecretKey"
+    );
+
     const { password, ...others } = user._doc;
-    res.status(200).json(others);
+    res.status(200).json({ ...others, token });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });
