@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
     const data = user._doc;
 
     const token = jwt.sign(
-      { userId: data._id, email: data.email },
+      { userId: data._id, userName: data.userName },
       "MySecretKey"
     );
 
@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
     !validate && res.status(400).json({ error: "Wrong Password!" });
 
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: user._id, userName: user.userName },
       "MySecretKey"
     );
 

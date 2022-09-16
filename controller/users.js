@@ -1,9 +1,15 @@
 const User = require("../models/User");
 const Post = require("../models/Post");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.updateUser = async (req, res) => {
-  if (req.body.userId === req.params.userId) {
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    res.status(400).json({ error: "You are not registered" });
+  }
+  const decodedToken = jwt.verify(token, "MySecretKey");
+  if (decodedToken.userId === req.params.userId) {
     if (req.body.password) {
       const salt = await bcrypt.genSalt(10);
       req.body.password = await bcrypt.hash(req.body.password, salt);
@@ -27,7 +33,12 @@ exports.updateUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  if (req.body.userId === req.params.userId) {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    res.status(400).json({ error: "You are not registered" });
+  }
+  const decodedToken = jwt.verify(token, "MySecretKey");
+  if (decodedToken.userId === req.params.userId) {
     try {
       const user = await User.findById(req.params.userId);
       try {
@@ -48,10 +59,19 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) {
+    res.status(400).json({ error: "You are not registered" });
+  }
+  const decodedToken = jwt.verify(token, "MySecretKey");
   try {
-    const user = await User.findById(req.params.userId);
-    const { password, ...others } = user._doc;
-    res.status(200).json(others);
+    if (decodedToken.userId === req.params.userId) {
+      const user = await User.findById(req.params.userId);
+      const { password, ...others } = user._doc;
+      res.status(200).json(others);
+    } else {
+      res.status(401).json({ error: "You can modify only your account!" });
+    }
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: err });

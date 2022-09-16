@@ -1,7 +1,10 @@
-const User = require("../models/User");
 const Post = require("../models/Post");
 
 exports.createPost = async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    res.status(400).json({ error: "You are not registered" });
+  }
   const newPost = new Post(req.body);
   try {
     const savedPost = await newPost.save();
@@ -12,9 +15,14 @@ exports.createPost = async (req, res) => {
 };
 
 exports.editPost = async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    res.status(400).json({ error: "You are not registered" });
+  }
+  const decodedToken = await jwt.verify(token, "MySecretKey");
   try {
     const post = await Post.findById(req.params.postId);
-    if (post.userName === req.body.userName) {
+    if (post.userName === decodedToken.userName) {
       try {
         const updatedPost = await Post.findByIdAndUpdate(
           req.params.postId,
@@ -36,9 +44,14 @@ exports.editPost = async (req, res) => {
 };
 
 exports.deletePost = async (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) {
+    res.status(400).json({ error: "You are not registered" });
+  }
+  const decodedToken = await jwt.verify(token, "MySecretKey");
   try {
     const post = await Post.findById(req.params.postId);
-    if (post.userName === req.body.userName) {
+    if (post.userName === decodedToken.userName) {
       try {
         await post.delete();
         res.status(200).json({ message: "Post has been deleted" });
