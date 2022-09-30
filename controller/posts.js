@@ -1,4 +1,5 @@
 const Post = require("../models/Post");
+const jwt = require("jsonwebtoken");
 
 exports.createPost = async (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
