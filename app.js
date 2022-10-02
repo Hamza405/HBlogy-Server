@@ -16,7 +16,10 @@ const app = express();
 app.use(cors());
 app.options("*", cors());
 app.use(express.json());
-app.use("/images", express.static(path.join(__dirname, "images")));
+// app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/test", (req, res) => {
+  res.status(200).send("Server is running");
+});
 
 app.use("/api", authRouter);
 app.use("/api/users", userRouter);
