@@ -1,8 +1,8 @@
 const aws = require("aws-sdk");
 const dotenv = require("dotenv");
 const Crypto = require("crypto");
-import { promisify } from "util";
-
+const utils = require("util");
+const randomBytes = utils.promisify(Crypto.randomBytes);
 dotenv.config();
 
 const region = "US East (Ohio) us-east-2";
@@ -14,11 +14,11 @@ const s3 = new aws.S3({
   region,
   accessKeyId,
   secretAccessKey,
-  signatureVersion: "4",
+  signatureVersion: "v4",
 });
 
-export const generateUploadURL = async () => {
-  const rawBytes = await Crypto.randomBytes(16);
+exports.generateUploadURL = async () => {
+  const rawBytes = await randomBytes(16);
   const imageName = rawBytes.toString("hex");
 
   const params = {
